@@ -125,8 +125,36 @@ SELECT * FROM cte
 
 )
 
+, cte2 AS (
 SELECT 
 	*
-	-- , COUNT(cte.EmployeeID) OVER 
-	, COUNT(cte.EmployeeID) OVER(PARTITION BY (SELECT NULL))
+	, COUNT(cte.EmployeeID) OVER(PARTITION BY (SELECT NULL)) AS Total
+	, COUNT(cte.EmployeeID) OVER(PARTITION BY (SELECT Depth)) AS CountPerLevel
 FROM cte
+)
+
+, cte3 AS (
+	SELECT 
+		cte2.EmployeeID
+		, cte2.ManagerID
+		, cte2.JobTitle
+		, cte2.Depth
+		, CountLower = cte2.Total - cte2.CountPerLevel
+	FROM cte2
+	WHERE cte2.ManagerID IS NULL
+
+	UNION ALL
+
+	SELECT 
+		  cte2.EmployeeID
+		, cte2.ManagerID
+		, cte2.JobTitle
+		, cte2.Depth
+		, CountLower = CountLower - cte2.CountPerLevel
+	FROM cte3
+	INNER JOIN cte2 ON cte2.ManagerID = cte3.EmployeeID
+)
+
+SELECT
+	*
+FROM cte3
