@@ -51,25 +51,19 @@ INSERT INTO dbo.Reciprocals VALUES
 SELECT * FROM dbo.Reciprocals;
 
 
--- Solution 1:
+-- Solution
 
-WITH team_score AS (
+WITH correct_player_cte AS (
 	SELECT 
-		(CASE 
-			WHEN [Player A] < [Player B] THEN CONCAT([Player A], '-', [Player B]) 
-			ELSE  CONCAT([Player B], '-', [Player A])
-		END) AS [Team]
-		, SUM(Score) AS Score
+		(CASE WHEN [Player A] < [Player B] THEN [Player A] ELSE [Player B] END) AS [Player A]
+		, (CASE WHEN [Player B] > [Player A] THEN [Player B] ELSE [Player A] END) AS [Player B]
+		, Score
 	FROM dbo.Reciprocals
-	GROUP BY
-		(CASE 
-			WHEN [Player A] < [Player B] THEN CONCAT([Player A], '-', [Player B]) 
-			ELSE  CONCAT([Player B], '-', [Player A])
-		END)
 )
 
-SELECT 
-	LEFT([Team], CHARINDEX('-', [Team]) - 1) AS [Player A] 
-	, RIGHT([Team], LEN([Team]) - CHARINDEX('-', [Team])) AS [Player A]
-	, Score
-FROM team_score
+SELECT
+	[Player A]
+	, [Player B]
+	, SUM(Score) AS Score
+FROM correct_player_cte
+GROUP BY [Player A], [Player B]
