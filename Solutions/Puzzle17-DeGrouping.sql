@@ -79,3 +79,21 @@ SELECT
 	, Quantity = 1
 FROM DeGrouping_CTE
 ORDER BY Product ASC
+
+
+
+-- Solution 2: Numbers Helper Table
+
+DROP TABLE IF EXISTS dbo.Numbers;
+
+CREATE TABLE dbo.Numbers (
+	Number INTEGER
+); 
+
+INSERT INTO dbo.Numbers VALUES (1), (2), (3), (4)
+
+SELECT 
+	Product
+	, Quantity = 1
+FROM dbo.DeGrouping CROSS JOIN dbo.Numbers 
+WHERE Quantity >= Number
