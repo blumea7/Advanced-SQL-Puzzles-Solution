@@ -50,6 +50,9 @@ INSERT INTO dbo.BackToTheFuture VALUES
 
 
 -- Check Data
+SELECT * FROM dbo.BackToTheFuture;
+
+-- Solution 1: LEAD() Function
 
 WITH NextDatesCTE AS (
 	SELECT 
@@ -94,4 +97,29 @@ SELECT * FROM
 	WHERE MergeFlag = 0
 	AND EndDate NOT IN (SELECT NextEndDate FROM MergedEndDatesCTE)
 	) answer
-ORDER BY StartDate ASC
+ORDER BY StartDate ASC;
+
+
+-- Solution 2: Self-Join
+
+WITH MergedDates AS (
+	SELECT 
+		a.StartDate 
+		, b.EndDate 
+	FROM dbo.BackToTheFuture a INNER JOIN dbo.BackToTheFuture b ON a.EndDate > b.StartDate AND a.EndDate <b.EndDate
+), 
+
+UnMergedDates AS (
+	SELECT
+		StartDate
+		, EndDate
+	FROM dbo.BackToTheFuture 
+		WHERE StartDate NOT IN (SELECT StartDate FROM MergedDates) AND EndDate NOT IN (SELECT EndDate FROM MergedDates)
+)
+
+SELECT * FROM (
+	SELECT * FROM MergedDates
+		UNION ALL
+	SELECT * FROM UnMergedDates
+) answer
+ORDER BY StartDate
