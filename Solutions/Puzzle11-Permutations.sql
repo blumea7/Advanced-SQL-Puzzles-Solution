@@ -22,7 +22,7 @@ INSERT INTO dbo.Permutation VALUES
 	, ('C');
 
 
--- Solution 
+-- Solution: Cross Join
 
 DECLARE @max_iteration INTEGER;
 SET @max_iteration = (SELECT COUNT([Test Case]) FROM dbo.Permutation);
@@ -51,3 +51,31 @@ SELECT
 FROM permutation_cte
 WHERE iteration = @max_iteration
 ORDER BY answer ASC
+
+-- Solution: Inner Join Not Matching 
+
+
+DECLARE @iteration int = (SELECT COUNT(*) FROM dbo.Permutation)
+
+;WITH permutationCTE AS ( 
+	SELECT
+		[Test Case] = CAST([Test Case] AS VARCHAR(MAX))
+		, iteration = 1
+	FROM dbo.Permutation
+
+	UNION ALL
+
+	SELECT
+		[Test Case] = CAST(CONCAT(a.[Test Case], ',', b.[Test Case]) AS VARCHAR(MAX))
+		, iteration = a.iteration + 1
+	FROM permutationCTE a INNER JOIN dbo.Permutation b ON a.[Test Case] <> b.[Test Case]
+	WHERE 
+		a.[Test Case] NOT LIKE CONCAT('%',b.[Test Case],'%')
+		AND iteration < @iteration
+)
+
+SELECT  
+	TestCases = [Test Case] 
+FROM permutationCTE
+	WHERE iteration = @iteration
+	ORDER BY [Test Case] ASC
