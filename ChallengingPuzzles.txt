@@ -1,0 +1,14 @@
+List of puzzles I find challenging:
+	1.Puzzle 2 - Managers and Employees
+	2.Puzzle 9 - Matching Sets -- Self Joins, Establishing Where Criteria
+	3.Puzzle 11 - Permutations 
+	4.Puzzle 14 - Indeterminate Process Log
+	5.Puzzle 15 - Group Concatenation
+	6.Puzzle 16 - Reciprocals
+
+List of puzzles that are not too hard but I need concept review:
+	1. Puzzle 5 - Phone Directory -- Manipulating Results of Pivoted Table using CASE WHEN
+	2. Puzzle 8 - Workflow Cases -- UNPIVOT Statement
+	3. Puzzle 17 - Degrouping
+	4. Puzzle 18 - Seating Charts -- Using LEAD Window function
+
