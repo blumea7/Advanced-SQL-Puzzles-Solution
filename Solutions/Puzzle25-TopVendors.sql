@@ -38,4 +38,21 @@ INSERT INTO dbo.TopVendors VALUES
 
 
 -- Check Data
-SELECT TOP(10) * FROM dbo.TopVendors
+SELECT TOP(10) * FROM dbo.TopVendors;
+
+
+-- Solution
+WITH MaxOrdersCTE AS (
+	SELECT
+		[Customer ID]
+		, [Count] AS [Order Count]
+		, [Max Order Count] = (MAX([Count]) OVER(PARTITION BY [Customer ID]))
+		, Vendor
+	FROM dbo.TopVendors
+)
+
+SELECT
+	[Customer ID]
+	, Vendor
+FROM MaxOrdersCTE
+	WHERE [Order Count] = [Max Order Count]
